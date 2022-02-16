@@ -7,11 +7,11 @@ export default function Navbar() {
         setActive(!active);
     };
     return (
-        <nav className="lg:bg-white z-40 bg-gray-600 h-16 fixed top-0 w-full shadow-md dark:bg-gray-900 dark:text-white">
+        <nav className="bg-white dark:bg-gray-900 z-40 h-16 fixed top-0 w-full shadow-lg dark:text-white">
             <div className="lg:flex cursor-pointer justify-around md:flex">
                 <div className="flex items-center justify-between">
                     <div className="text-xl py-4 font-semibold">
-                        <h2 className="text-2xl font-bold dark:text-white hover:text-gray-700 dark:hover:text-gray-300">
+                        <h2 className="text-2xl font-bold dark:text-white hover:text-gray-700">
                             <span className="cursor-pointer">
                                 <span className="text-blue-400">Electricity</span>
                             </span>
@@ -49,11 +49,11 @@ export default function Navbar() {
                         </button>
                     </div>
                 </div>
-                <li className={`${active ? 'bg-gray-600' : 'hidden'} py-4 mt-2 sm:flex block text-sm text-white dark:text-white lg:text-gray-600 capitalize hover:text-blue-700`}>
+                <li className={`${active ? 'bg-gray-600' : 'hidden'} py-4 mt-2 sm:flex block text-sm text-white dark:text-white capitalize hover:text-blue-700`}>
                     <a href="/">About Us</a>
                 </li>
 
-                <li className="py-4 mt-2 sm:flex block text-sm text-white dark:text-white lg:text-gray-600 capitalize hover:text-blue-700">
+                <li className="py-4 mt-2 sm:flex block text-sm text-white dark:text-white capitalize hover:text-blue-700">
                     <a href="/#services">Services</a>
                 </li>
             </div>

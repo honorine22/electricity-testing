@@ -1,52 +1,101 @@
-import React from 'react';
-const Form = () => {
-    const [valueChange, setValueChange] = useState('')
-    const [valueSubmit, setValueSubmit] = useState('')
+import React, { Component } from 'react';
+import { FormErrors } from './FormErrors';
 
-    const handleChange = (event) => (
-        setValueChange(event.target.value)
-    );
+const classes = 'bg-slate-25 text-black p-2.5 placeholder-[#A5A8B9] text-sm font-light tracking-widest px-4 border-1 border-[#F0F1F7] rounded-lg w-full'
+const labelClasses = 'block mb-2 text-sm font-medium dark:text-white'
+class NewForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      amount: '',
+      meter: '',
+      formErrors: { amount: '', meter: '' },
+      amountValid: false,
+      meterValid: false,
+      formValid: false
+    }
+  }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setValueSubmit(event.target.text1.value)
-    };
+  handleUserInput = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (isNaN(value)) return
+    this.setState({ [name]: value },
+      () => { this.validateField(name, value) });
+  }
+
+  validateField(fieldName, value) {
+    let fieldValidationErrors = this.state.formErrors;
+    let amountValid = this.state.amountValid;
+    let meterValid = this.state.meterValid;
+
+    switch (fieldName) {
+      case 'amount':
+        amountValid = value > 100
+        fieldValidationErrors.amount = amountValid ? '' : ' is invalid, only multiples of 100 not greater than 182,500 is accepted*';
+        break;
+      case 'meter':
+        meterValid = value.length === 6;
+        fieldValidationErrors.meter = meterValid ? '' : ' is invalid, only 6 digits accepted*';
+        break;
+      default:
+        break;
+    }
+    this.setState({
+      formErrors: fieldValidationErrors,
+      amountValid: amountValid,
+      meterValid: meterValid
+    }, this.validateForm);
+  }
+
+  validateForm() {
+    this.setState({ formValid: this.state.amountValid && this.state.meterValid });
+  }
+
+  errorClass(error) {
+    return (error.length === 0 ? '' : 'has-error');
+  }
+
+  render() {
     return (
-        <div className='lg:mx-4 mt-48 lg:mt-24 grid lg:grid-cols-2 grid-cols-1'>
-            <div className='p-4 lg:ml-80 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700'>
-                <form data-testid="form" onSubmit={handleSubmit} className='space-y-6' action="#">
-                    <h2 className='text-xl font-bold text-gray-900 dark:text-white'>Log in</h2>
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Amount</label>
-                        <input onChange={handleChange} htmlFor="text1" onKeyPress={(event) => {
-                            if (!/[0-9]/.test(event.key)) {
-                                event.preventDefault();
-                            }
-                        }} pattern="[0-9]*" inputmode="numeric" name="amount" id="amount" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Meter</label>
-                        <input id="num2" onKeyPress={(event) => {
-                            if (!/[0-9]/.test(event.key)) {
-                                event.preventDefault();
-                            }
-                        }} name="meter" id="meter" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                    </div>
-                    <button type="submit" className="w-full -mt-4 text-white bg-cyan-400 hover:bg-cyan-800 focus:ring-4 focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800">Submit</button>
-                </form>
-                <h3>React State:</h3>
-                <p>Change: {valueChange}</p>
-                <p>Submit Value: {valueSubmit}</p>
-                <br />
+      <div className='lg:mx-4 mt-32 lg:mt-16 grid lg:grid-cols-2 grid-cols-1'>
+        <div className='p-4 lg:ml-96 max-w-sm bg-white rounded-lg border border-gray-500 shadow sm:p-6 lg:p-8 dark:bg-gray-800'>
+          <form data-testid="form" className='space-y-6'>
+            <h2 className='text-xl font-bold dark:text-white'>Log in</h2>
+            <div className="border border-gray-300 rounded text-red-500">
+              <FormErrors formErrors={this.state.formErrors} />
             </div>
-            <div className='bg-cyan-400 lg:flex hidden rounded-lg max-w-sm'>
-                <div className='py-52 px-24'>
-                    <p className='text-md text-white'>Nice to see you again</p>
-                    <h1 className='font-bold pt-2 text-white text-xl'>Welcome! Sell It.</h1>
-                </div>
+            <div className={`form-group ${this.errorClass(this.state.formErrors.amount)}`}>
+              <label htmlFor="amount" className={labelClasses}>amount</label>
+              <input type="text" aria-label='cost-input' required className={classes} name="amount"
+                placeholder="amount"
+                value={this.state.amount}
+                onChange={this.handleUserInput} />
             </div>
-        </div>
-    );
-};
+            <div className={`form-group ${this.errorClass(this.state.formErrors.meter)}`}>
+              <label htmlFor="meter" className={labelClasses}>meter</label>
+              <input type="text" aria-label='meter' className={classes} name="meter"
+                placeholder="meter"
+                value={this.state.meter}
+                onChange={this.handleUserInput} />
+            </div>
 
-export default Form;
+            <button type="submit" className="w-full -mt-4 text-white bg-cyan-400 rounded-lg text-sm px-5 py-2.5 text-center" disabled={!this.state.formValid}>Sign up</button>
+          </form>
+          <div className='mt-16 flex-col flex'>
+            <p className='dark:text-white'>Amount Value: {this.state.amount}</p>
+            <p className='dark:text-white'>Meter Number: {this.state.meter}</p>
+          </div>
+        </div>
+        <div className='bg-cyan-400 lg:flex hidden rounded-lg max-w-sm'>
+          <div className='py-52 px-24'>
+            <p className='text-md text-white'>Nice to see you again</p>
+            <h1 className='font-bold pt-2 text-white text-xl'>Welcome! Sell It.</h1>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+export default NewForm;
