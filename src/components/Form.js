@@ -9,10 +9,10 @@ class NewForm extends Component {
     this.state = {
       amount: '',
       meter: '',
-      formErrors: { amount: '', meter: '' },
       amountValid: false,
       meterValid: false,
-      formValid: false
+      formValid: false,
+      formErrors: { amount: '', meter: '' }
     }
   }
 
